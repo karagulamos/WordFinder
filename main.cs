@@ -18,7 +18,6 @@ class MainClass
     var finder = new WordFinder(words);
 
     var pattern = "wenterance";
-
     foreach(var word in finder.Find(pattern))
       Console.WriteLine(word);
   }
