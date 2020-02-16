@@ -33,12 +33,10 @@ public class WordFinder
     for(var i = 0; i < pattern.Length; i++)
     {
       var current = _root;
-    
+
       for(var pos = i; pos < pattern.Length; pos++)
       {
-        current = current.Children[IndexOf(pattern[pos])];
-
-        if(current == default(Node))
+        if(!current.Children.TryGetValue(pattern[pos], out current))
           break;
 
         word.Append(pattern[pos]);
@@ -57,23 +55,18 @@ public class WordFinder
 
     foreach(var letter in word)
     {
-      var index = IndexOf(letter);
+      if(!current.Children.TryGetValue(letter, out var child))
+        current.Children[letter] = child = new Node();
 
-      if(current.Children[index] == default(Node))
-        current.Children[index] = new Node();
-
-      current = current.Children[index];
+      current = child;
     }
 
     current.IsWord = true;
   }
 
-  private static int IndexOf(char letter) => letter - 'a';
-
   private class Node
-  {
-    public const int AlphabetSize = 26;      
-    public Node[] Children { get; set; } = new Node[AlphabetSize];
+  {     
+    public Dictionary<char, Node> Children { get; set; } = new Dictionary<char, Node>();
     public bool IsWord { get; set; }
   }
 }
